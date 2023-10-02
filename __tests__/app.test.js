@@ -28,4 +28,12 @@ describe('GET /api/topics', () => {
                 })
             })
     })
+    test('404 status code and error message when passed a misspelled endpoint', ()=>{
+        return request(app)
+            .get("/api/topicz")
+            .expect(404)
+            .then(({body})=> {
+                expect(body.message).toBe('path not found')
+            })
+        })
 })
