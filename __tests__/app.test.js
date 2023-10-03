@@ -41,5 +41,18 @@ describe('GET /api', () => {
     test('responds with 200 status code', () =>{
         return request(app).get('/api').expect(200);
     })
-    // test('returns an object describing all the endp')
+    test('returns an object describing all the valid TEST endpoints',() => {
+        return request(app)
+            .get('/api')
+            .expect(200)
+            .then(({ body }) => {
+                console.log(body.mapAPI)
+                console.log(body.mapAPI['GET /api'])
+                const siteMap = body.mapAPI
+                expect(typeof siteMap).toBe("object")
+                expect(siteMap.hasOwnProperty('GET /api')).toBe(true)
+                expect(siteMap.hasOwnProperty('GET /api/topics')).toBe(true)
+                expect(siteMap.hasOwnProperty('GET /api/articles')).toBe(true)
+            })
+    })
 })
