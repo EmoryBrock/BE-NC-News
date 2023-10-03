@@ -41,18 +41,28 @@ describe('GET /api', () => {
     test('responds with 200 status code', () =>{
         return request(app).get('/api').expect(200);
     })
-    test('returns an object describing all the valid TEST endpoints',() => {
+    test('returns an object describing the valid inital TEST endpoints',() => {
         return request(app)
             .get('/api')
             .expect(200)
             .then(({ body }) => {
-                console.log(body.mapAPI)
-                console.log(body.mapAPI['GET /api'])
                 const siteMap = body.mapAPI
+
                 expect(typeof siteMap).toBe("object")
                 expect(siteMap.hasOwnProperty('GET /api')).toBe(true)
+                expect(typeof(siteMap['GET /api'].description)).toBe("string")
                 expect(siteMap.hasOwnProperty('GET /api/topics')).toBe(true)
+                expect(typeof(siteMap['GET /api/topics'].description)).toBe("string")
                 expect(siteMap.hasOwnProperty('GET /api/articles')).toBe(true)
+                expect(typeof(siteMap['GET /api/articles'].description)).toBe("string")
             })
     })
+    test('404 status code and error message when passed a misspelled endpoint', ()=>{
+        return request(app)
+            .get("/dpi")
+            .expect(404)
+            .then(({body})=> {
+                expect(body.message).toBe('path not found')
+            })
+        })
 })

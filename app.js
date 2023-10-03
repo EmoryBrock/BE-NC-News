@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const {getTopics} = require('./controllers/topics.controller.js')
-const {getsiteMap} = require('./controllers/api.controller.js')
+const {getsiteMap} = require('./controllers/api.controller.js');
 
 app.get("/api/topics", getTopics);
 app.get("/api", getsiteMap)
