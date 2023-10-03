@@ -1,8 +1,14 @@
 const express = require('express');
 const app = express();
-const {getTopics} = require('./controllers/topics.controller')
+const {getTopics} = require('./controllers/topics.controller.js')
+const {getArticleById} = require('./controllers/getArticleById.contoller.js')
 
+
+// valid endpoints
 app.get("/api/topics", getTopics);
+app.get("/api/articles/:artcle_id", (req, res) => {
+res.status(200).send()
+})
 
 // catch all at this stage of development
 app.use('/*', (req, res, next) => {

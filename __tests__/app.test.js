@@ -37,3 +37,15 @@ describe('GET /api/topics', () => {
             })
         })
 })
+
+describe('GET /api/articles/:article_id', ()=>{
+    test('responds with a 200 status code', () => {
+        return request(app)
+            .get('/api/articles/2')
+            .expect(200);
+    })
+    test('responds with the correct article', ()=>{
+        return request(app).
+            .get('')
+    })
+})
