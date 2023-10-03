@@ -44,8 +44,8 @@ describe('GET /api/articles/:article_id', ()=>{
             .get('/api/articles/2')
             .expect(200);
     })
-    test('responds with the correct article', ()=>{
-        return request(app).
-            .get('')
-    })
+    // test('responds with the correct article', ()=>{
+    //     return request(app).
+    //         .get('')
+    // })
 })
