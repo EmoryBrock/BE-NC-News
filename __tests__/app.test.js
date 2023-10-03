@@ -12,7 +12,6 @@ afterAll(()=>{
  db.end()
 })
 
-
 describe('GET /api/topics', () => {
     test('responds with a 200 status code', () => {
         return request(app).get('/api/topics').expect(200);
@@ -36,4 +35,11 @@ describe('GET /api/topics', () => {
                 expect(body.message).toBe('path not found')
             })
         })
+})
+
+describe('GET /api', () => {
+    test('responds with 200 status code', () =>{
+        return request(app).get('/api').expect(200);
+    })
+    // test('returns an object describing all the endp')
 })
