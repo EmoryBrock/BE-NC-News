@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
-const {getTopics} = require('./controllers/topics.controller')
+const {getTopics} = require('./controllers/topics.controller.js')
+const {getsiteMap} = require('./controllers/api.controller.js');
 
 app.get("/api/topics", getTopics);
+app.get("/api", getsiteMap)
 
 // catch all at this stage of development
 app.use('/*', (req, res, next) => {
