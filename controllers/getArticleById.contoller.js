@@ -1,5 +1,9 @@
+const {fetchArticleById} = require('../models/article.model.js')
 
 exports.getArticleById = (req, res, next) => {
-    console.log("in getArticle controller")
-    res.status(200).send ({message: "will return article"});
+    const id = +req.params.article_id
+    fetchArticleById(id).then((article) => {
+        console.log(article)
+        res.status(200).send({article})
+    })
 }
