@@ -16,6 +16,7 @@ app.all('/*', (req, res, next) => {
     res.status(404).send({message: "path not found"});
 })
 
+
 // Error handling middleware
 app.use(handleCustomErrors);
 app.use(handle500Errors);

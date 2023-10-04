@@ -35,7 +35,37 @@ describe('GET /api/topics', () => {
                 expect(body.message).toBe('path not found')
             })
         })
-})
+    })
+
+    describe('GET /api', () => {
+        test('responds with 200 status code', () =>{
+            return request(app).get('/api').expect(200);
+        })
+        test('returns an object describing the valid inital TEST endpoints',() => {
+            return request(app)
+                .get('/api')
+                .expect(200)
+                .then(({ body }) => {
+                    const siteMap = body.mapAPI
+    
+                    expect(typeof siteMap).toBe("object")
+                    expect(siteMap.hasOwnProperty('GET /api')).toBe(true)
+                    expect(typeof(siteMap['GET /api'].description)).toBe("string")
+                    expect(siteMap.hasOwnProperty('GET /api/topics')).toBe(true)
+                    expect(typeof(siteMap['GET /api/topics'].description)).toBe("string")
+                    expect(siteMap.hasOwnProperty('GET /api/articles')).toBe(true)
+                    expect(typeof(siteMap['GET /api/articles'].description)).toBe("string")
+                })
+        })
+        test('404 status code and error message when passed a misspelled endpoint', ()=>{
+            return request(app)
+                .get("/dpi")
+                .expect(404)
+                .then(({body})=> {
+                    expect(body.message).toBe('path not found')
+                })
+            })
+    })
 
 describe('GET /api/articles/:article_id', ()=>{
     test('responds with a 200 status code', () => {
@@ -59,50 +89,20 @@ describe('GET /api/articles/:article_id', ()=>{
             })
     })
     // error testing.  404 if enter a valid number id, 400 Bad request if enter "two" id reject at controller, 
-    // test('responds with 404 if query is called with a valid number input', () => {
+    // test.only('responds with 404 if query is called with a valid number input', () => {
     //     return request(app)
-    //         .get('/api/article/9999')
+    //         .get('/api/articles/9999')
     //         .expect(404)
     //         .then(({body})=> {
-    //             console.log(body.message, "in test")
     //             expect(body.message).toBe('No article found for id 9999')
     //         })
     // })
-    // test.only('responds with 400 if query is called with a invalid number input', () => {
-    //     return request(app)
-    //         .get('/api/article/two')
-    //         .expect(400)
-    //         .then(({body})=> {
-    //             console.log(body.message, "in test")
-    //             expect(body.message).toBe('bad request: this is not a number')
-    //         })
-})    
-describe('GET /api', () => {
-    test('responds with 200 status code', () =>{
-        return request(app).get('/api').expect(200);
-    })
-    test('returns an object describing the valid inital TEST endpoints',() => {
+    test('responds with 400 if query is called with a invalid number input', () => {
         return request(app)
-            .get('/api')
-            .expect(200)
-            .then(({ body }) => {
-                const siteMap = body.mapAPI
-
-                expect(typeof siteMap).toBe("object")
-                expect(siteMap.hasOwnProperty('GET /api')).toBe(true)
-                expect(typeof(siteMap['GET /api'].description)).toBe("string")
-                expect(siteMap.hasOwnProperty('GET /api/topics')).toBe(true)
-                expect(typeof(siteMap['GET /api/topics'].description)).toBe("string")
-                expect(siteMap.hasOwnProperty('GET /api/articles')).toBe(true)
-                expect(typeof(siteMap['GET /api/articles'].description)).toBe("string")
-            })
-    })
-    test('404 status code and error message when passed a misspelled endpoint', ()=>{
-        return request(app)
-            .get("/dpi")
-            .expect(404)
+            .get('/api/articles/two')
+            .expect(400)
             .then(({body})=> {
-                expect(body.message).toBe('path not found')
+                expect(body.message).toBe('bad request: this is not a number')
             })
-        })
-})
+    })
+})    
