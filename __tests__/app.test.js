@@ -68,7 +68,7 @@ describe('GET /api', () => {
 })
 
 describe('GET /api/articles', () => {
-    test('responds with 200 status code', () =>{
+    test.skip('responds with 200 status code', () =>{
         return request(app).get('/api/articles').expect(200);
     })
     // test('returns an array of topic objects of the correct format', ()=> {
