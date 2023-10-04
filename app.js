@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const {getTopics} = require('./controllers/topics.controller.js')
 const {getArticleById} = require('./controllers/getArticleById.contoller.js')
+const {handleCustomErrors, handle500Errors} = require('./controllers/errors.controllers.js')
 
 
 // valid endpoints
@@ -13,10 +14,8 @@ app.use('/*', (req, res, next) => {
     res.status(404).send({message: "path not found"});
 })
 
-// general interal server err
-app.use((err, req, res, ext) => {
-    console.log(err)
-    res.status(500).send({ message: 'I.S.E. something broke'})
-})
+// Error handling middleware
+app.use(handleCustomErrors);
+app.use(handle500Errors);
 
 module.exports = app;

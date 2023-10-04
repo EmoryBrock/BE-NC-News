@@ -59,4 +59,23 @@ describe('GET /api/articles/:article_id', ()=>{
                 expect(body.article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
             })
     })
+    // error testing.  404 if enter a valid number id, 400 Bad request if enter "two" id reject at controller, 
+    test('responds with 404 if query is called with a valid number input', () => {
+        return request(app)
+            .get('/api/article/9999')
+            .expect(404)
+            .then(({body})=> {
+                console.log(body.message, "in test")
+                expect(body.message).toBe('No article found for id 9999')
+            })
+    })
+    test.only('responds with 400 if query is called with a invalid number input', () => {
+        return request(app)
+            .get('/api/article/two')
+            .expect(400)
+            .then(({body})=> {
+                console.log(body.message, "in test")
+                expect(body.message).toBe('bad request: this is not a number')
+            })
+    })    
 })
