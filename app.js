@@ -2,12 +2,14 @@ const express = require('express');
 const app = express();
 const {getTopics} = require('./controllers/topics.controller.js')
 const {getsiteMap} = require('./controllers/api.controller.js');
+const {getArticles} = require('./controllers/articles.controller.js')
+
 
 app.get("/api/topics", getTopics);
 app.get("/api", getsiteMap);
 
 
-// app.get("/api/articles", getArticle)
+app.get("/api/articles", getArticles)
 
 
 // catch all at this stage of development

@@ -67,20 +67,25 @@ describe('GET /api', () => {
         })
 })
 
-describe('GET /api/articles', () => {
-    test.skip('responds with 200 status code', () =>{
+describe.only('GET /api/articles', () => {
+    test('responds with 200 status code', () =>{
         return request(app).get('/api/articles').expect(200);
     })
-    // test('returns an array of topic objects of the correct format', ()=> {
-    //     return request(app)
-    //         .get('/api/articles')
-    //         .then(({ body }) => {
-    //             console.log(body.articles)
-    //             expect(body.articles).toHaveLength(13)
-    //             // body.articles.forEach((articles)=>{
-    //             //     expect(typeof(topic.slug)).toBe('string')
-    //             //     expect(typeof(topic.description)).toBe('string')
-    //             // })
-    //         })
-    // })    
+    test('returns an array of article objects of the correct format', ()=> {
+        return request(app)
+            .get('/api/articles')
+            .then(({ body }) => {
+                expect(body.articles).toHaveLength(13)
+                body.articles.forEach((articles)=>{
+                    expect(articles).toHaveProperty('author');
+                    expect(articles).toHaveProperty('title');
+                    expect(articles).toHaveProperty('article_id');
+                    expect(articles).toHaveProperty('topic');
+                    expect(articles).toHaveProperty('created_at');
+                    expect(articles).toHaveProperty('votes');
+                    expect(articles).toHaveProperty('article_img_url');
+                    expect(articles).toHaveProperty('comment_count');
+                })
+            })
+    })    
 })
