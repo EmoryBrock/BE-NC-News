@@ -4,7 +4,11 @@ const {getTopics} = require('./controllers/topics.controller.js')
 const {getsiteMap} = require('./controllers/api.controller.js');
 
 app.get("/api/topics", getTopics);
-app.get("/api", getsiteMap)
+app.get("/api", getsiteMap);
+
+
+// app.get("/api/articles", getArticle)
+
 
 // catch all at this stage of development
 app.use('/*', (req, res, next) => {

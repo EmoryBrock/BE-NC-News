@@ -66,3 +66,21 @@ describe('GET /api', () => {
             })
         })
 })
+
+describe('GET /api/articles', () => {
+    test('responds with 200 status code', () =>{
+        return request(app).get('/api/articles').expect(200);
+    })
+    // test('returns an array of topic objects of the correct format', ()=> {
+    //     return request(app)
+    //         .get('/api/articles')
+    //         .then(({ body }) => {
+    //             console.log(body.articles)
+    //             expect(body.articles).toHaveLength(13)
+    //             // body.articles.forEach((articles)=>{
+    //             //     expect(typeof(topic.slug)).toBe('string')
+    //             //     expect(typeof(topic.description)).toBe('string')
+    //             // })
+    //         })
+    // })    
+})
