@@ -3,6 +3,7 @@ const db = require('../db/connection.js')
 const request = require('supertest');
 const seed = require('../db/seeds/seed.js')
 const data = require('../db/data/test-data/index.js')
+const endpoints = require('../endpoints.json')
 
 beforeEach(()=>{
     return seed(data)
@@ -41,22 +42,23 @@ describe('GET /api/topics', () => {
         test('responds with 200 status code', () =>{
             return request(app).get('/api').expect(200);
         })
-        test('returns an object describing the valid inital TEST endpoints',() => {
-            return request(app)
-                .get('/api')
-                .expect(200)
-                .then(({ body }) => {
-                    const siteMap = body.mapAPI
+        // test('returns an object describing the valid inital TEST endpoints',() => {
+        //     return request(app)
+        //         .get('/api')
+        //         .expect(200)
+        //         .then(({ body }) => {
+        //             const siteMap = body.mapAPI
+        //             console.log(siteMap)
     
-                    expect(typeof siteMap).toBe("object")
-                    expect(siteMap.hasOwnProperty('GET /api')).toBe(true)
-                    expect(typeof(siteMap['GET /api'].description)).toBe("string")
-                    expect(siteMap.hasOwnProperty('GET /api/topics')).toBe(true)
-                    expect(typeof(siteMap['GET /api/topics'].description)).toBe("string")
-                    expect(siteMap.hasOwnProperty('GET /api/articles')).toBe(true)
-                    expect(typeof(siteMap['GET /api/articles'].description)).toBe("string")
-                })
-        })
+        //             expect(typeof siteMap).toBe("object")
+        //             expect(siteMap.hasOwnProperty('GET /api')).toBe(true)
+        //             expect(typeof(siteMap['GET /api'].description)).toBe("string")
+        //             expect(siteMap.hasOwnProperty('GET /api/topics')).toBe(true)
+        //             expect(typeof(siteMap['GET /api/topics'].description)).toBe("string")
+        //             expect(siteMap.hasOwnProperty('GET /api/articles')).toBe(true)
+        //             expect(typeof(siteMap['GET /api/articles'].description)).toBe("string")
+        //         })
+        // })
         test('404 status code and error message when passed a misspelled endpoint', ()=>{
             return request(app)
                 .get("/dpi")
@@ -65,27 +67,34 @@ describe('GET /api/topics', () => {
                     expect(body.message).toBe('path not found')
                 })
             })
+        // need to add dynamic check for endpoints and descriptions object keys
+        test('output of GET API matches the endpoint JSON file object', ()=>{
+            return request(app)
+                .get('/api')
+                .then(({ body }) => {
+                    expect(body.mapAPI).toEqual(endpoints)
+                })
+        })
     })
 
-describe('GET /api/articles/:article_id', ()=>{
-    test('responds with a 200 status code', () => {
-        return request(app)
-            .get('/api/articles/2')
-            .expect(200);
-    })
-    test('responds with the correct article object', ()=>{
-        return request(app)
-            .get('/api/articles/12')
-            .then(({body})=>{
-                console.log(body, "in app test")
-                expect(body.article.article_id).toBe(12)
-                expect(body.article.title).toBe('Moustache')
-                expect(body.article.topic).toBe('mitch')
-                expect(body.article.author).toBe('butter_bridge')
-                expect(body.article.body).toBe('Have you seen the size of that thing?')
-                expect(body.article.created_at).toBe('2020-10-11T11:24:00.000Z')
-                expect(body.article.votes).toBe(0)
-                expect(body.article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
+    describe('GET /api/articles/:article_id', ()=>{
+        test('responds with a 200 status code', () => {
+            return request(app)
+                .get('/api/articles/2')
+                .expect(200);
+        })
+        test('responds with the correct article object', ()=>{
+            return request(app)
+                .get('/api/articles/12')
+                .then(({body})=>{
+                    expect(body.article.article_id).toBe(12)
+                    expect(body.article.title).toBe('Moustache')
+                    expect(body.article.topic).toBe('mitch')
+                    expect(body.article.author).toBe('butter_bridge')
+                    expect(body.article.body).toBe('Have you seen the size of that thing?')
+                    expect(body.article.created_at).toBe('2020-10-11T11:24:00.000Z')
+                    expect(body.article.votes).toBe(0)
+                    expect(body.article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
             })
     })
     // error testing.  404 if enter a valid number id, 400 Bad request if enter "two" id reject at controller, 

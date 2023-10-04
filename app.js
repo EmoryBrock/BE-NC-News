@@ -8,8 +8,10 @@ const {getsiteMap} = require('./controllers/api.controller.js');
 
 // valid endpoints
 app.get("/api/topics", getTopics);
-app.get("/api/articles/:article_id", getArticleById)
 app.get("/api", getsiteMap)
+app.get("/api/articles/:article_id", getArticleById)
+
+// console.log(app._router.stack)
 
 // catch all at this stage of development
 app.all('/*', (req, res, next) => {
