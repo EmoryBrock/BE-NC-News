@@ -87,5 +87,22 @@ describe.only('GET /api/articles', () => {
                     expect(articles).toHaveProperty('comment_count');
                 })
             })
-    })    
+    }) 
+    // test('returns an array of article objects in desceding by date created', ()=>{
+    //     return request(app)
+    //         .get('/api/articles')
+    //         .then(({ body }) => {
+    //             expect(body.articles).toBeSortedBy('created_at', {descending: true,
+    //         })
+    //     })
+    // })
+    test('returns an array of article objects that does not include article body', ()=> {
+        return request(app)
+            .get('/api/articles')
+            .then(({body}) => {
+                body.articles.forEach((articles)=>{
+                    expect(articles).not.toHaveProperty('body');
+                })
+        })
+    })
 })
