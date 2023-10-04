@@ -67,7 +67,7 @@ describe('GET /api', () => {
         })
 })
 
-describe.only('GET /api/articles', () => {
+describe('GET /api/articles', () => {
     test('responds with 200 status code', () =>{
         return request(app).get('/api/articles').expect(200);
     })
@@ -88,14 +88,14 @@ describe.only('GET /api/articles', () => {
                 })
             })
     }) 
-    // test('returns an array of article objects in desceding by date created', ()=>{
-    //     return request(app)
-    //         .get('/api/articles')
-    //         .then(({ body }) => {
-    //             expect(body.articles).toBeSortedBy('created_at', {descending: true,
-    //         })
-    //     })
-    // })
+    test.skip('returns an array of article objects in desceding by date created', ()=>{
+        return request(app)
+            .get('/api/articles')
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy('created_at', {descending: true,
+            })
+        })
+    })
     test('returns an array of article objects that does not include article body', ()=> {
         return request(app)
             .get('/api/articles')
@@ -103,6 +103,14 @@ describe.only('GET /api/articles', () => {
                 body.articles.forEach((articles)=>{
                     expect(articles).not.toHaveProperty('body');
                 })
+        })
+    })
+    test('404 status code and error message when passed a misspelled endpoint', ()=>{
+        return request(app)
+        .get('/api/articlez')
+        .expect(404)
+        .then(({body})=> {
+            expect(body.message).toBe('path not found')
         })
     })
 })
