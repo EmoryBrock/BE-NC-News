@@ -89,14 +89,14 @@ describe('GET /api/articles/:article_id', ()=>{
             })
     })
     // error testing.  404 if enter a valid number id, 400 Bad request if enter "two" id reject at controller, 
-    // test.only('responds with 404 if query is called with a valid number input', () => {
-    //     return request(app)
-    //         .get('/api/articles/9999')
-    //         .expect(404)
-    //         .then(({body})=> {
-    //             expect(body.message).toBe('No article found for id 9999')
-    //         })
-    // })
+    test('responds with 404 if query is called with a valid number input', () => {
+        return request(app)
+            .get('/api/articles/9999')
+            .expect(404)
+            .then(({body})=> {
+                expect(body.message).toBe('No article found for id 9999')
+            })
+    })
     test('responds with 400 if query is called with a invalid number input', () => {
         return request(app)
             .get('/api/articles/two')
