@@ -11,6 +11,8 @@ app.get("/api", getsiteMap);
 
 app.get("/api/articles", getArticles)
 
+console.log(app._router.stack.filter(r=>r.route).map(r=r=>r.route.path), "current endpoints")
+
 
 // catch all at this stage of development
 app.use('/*', (req, res, next) => {
