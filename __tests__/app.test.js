@@ -112,12 +112,13 @@ describe('Endpoint general errors', () => {
 })
 
 describe('GET /api/articles/:article_id/comments', () => {
-    test('returns an array of article object of the correct format', ()=> {
+    test('returns an array of comment object(s) of the queried article in the correct format', ()=> {
         return request(app)
         .get('/api/articles/3/comments')
         .expect(200)
         .then(({ body }) => {
             expect(Array.isArray(body)).toBe(true)
+            expect(body).toBeSortedBy('created_at', {descending: true,})
             body.forEach((comment)=>{
                 expect(comment).toHaveProperty('comment_id');
                 expect(comment).toHaveProperty('votes');
@@ -128,21 +129,30 @@ describe('GET /api/articles/:article_id/comments', () => {
             })
         })
     })
+    test('returns an empty array if article id does exist but does not have comments', ()=> {
+        return request(app)
+        .get('/api/articles/13/comments')
+        .expect(200)
+        .then(({ body }) => {
+            expect(Array.isArray(body)).toBe(true)
+            expect(body).toEqual([])
+            })
+     })
     test('returns a 400 if an invalid article_id is provided', ()=>{
         return request(app)
         .get('/api/articles/three/comments')
         .expect(400)
         .then(({body})=> {
-            expect(body.message).toBe(`bad request: this is not a number`)
-        })
+            expect(body.message).toBe(`bad request`)
+            })
     })
     test('returns a 404 if passed an article_id that does not exist in the database', ()=>{
         return request(app)
         .get('/api/articles/9999/comments')
         .expect(404)
         .then(({body})=> {
-            expect(body.message).toBe(`No comments found. Article ID 9999 does not exist.`)
-        })
+            expect(body.message).toBe(`No article found for id 9999`)
+            })
     })
 })
         

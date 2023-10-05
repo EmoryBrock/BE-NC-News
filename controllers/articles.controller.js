@@ -26,15 +26,11 @@ exports.getArticles = (req, res, next) => {
 exports.getCommentsByArticleID = (req, res, next) => {
     const {article_id }= req.params
 
-    if (isNaN(article_id)) return next ({
-        status: 400,
-        message: `bad request: this is not a number`
-    })
-
-    fetchCommentsByArticleId(article_id)
-    .then((article) => {
-          res.status(200).send(article)
-    })
-    .catch(err => {next(err)})
+    Promise.all([fetchArticleById(article_id), fetchCommentsByArticleId(article_id)])
+        .then((results) => {
+            res.status(200).send(results[1])
+            return Promise.all([fetchArticleById(article_id), fetchCommentsByArticleId(article_id)])
+        })
+        .catch(err => {next(err)})
 
 }

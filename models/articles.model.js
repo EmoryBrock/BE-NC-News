@@ -37,20 +37,12 @@ exports.fetchArticles = () => {
 }
 
 exports.fetchCommentsByArticleId = (id) =>{
-    // const currentArticleIdNums = db.query('SELECT article_id FROM articles;')
-    // console.log(currentArticleIdNums)
-
     return db
         .query(
             `SELECT * FROM comments
-            WHERE article_id=$1;`, [id]) 
+            WHERE article_id=$1
+            ORDER BY created_at DESC;`, [id]) 
         .then(({rows}) => {
-                if (rows.length === 0) {
-                    return Promise.reject({ 
-                        status: 404, 
-                        message: `No comments found. Article ID ${id} does not exist.`
-                    })
-                }
                 return rows
         })
 }

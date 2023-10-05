@@ -20,6 +20,14 @@ app.use('/*', (req, res, next) => {
 })
 
 // general interal server err
+app.use((err,req,res, next) =>{
+    if (err.code === '22P02') {
+        res.status(400).send({message: 'bad request'})
+    } else { 
+        next(err)
+    }
+})
+
 app.use((err, req, res, next) =>{
     if (err.status) {
         res.status(err.status).send({message: err.message})
@@ -31,7 +39,7 @@ app.use((err, req, res, next) =>{
 
 app.use((err, req, res, ext) => {
     console.log(err)
-    res.status(500).send({ message: 'I.S.E. something broke'})
+    res.status(500).send({ message: 'internal server error'})
 })
 
 module.exports = app;
