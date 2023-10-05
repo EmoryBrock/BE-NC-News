@@ -2,9 +2,17 @@ const express = require('express');
 const app = express();
 const {getTopics} = require('./controllers/topics.controller.js')
 const {getsiteMap} = require('./controllers/api.controller.js');
+const {getArticles} = require('./controllers/articles.controller.js')
+
 
 app.get("/api/topics", getTopics);
-app.get("/api", getsiteMap)
+app.get("/api", getsiteMap);
+
+
+app.get("/api/articles", getArticles)
+
+console.log(app._router.stack.filter(r=>r.route).map(r=r=>r.route.path), "current endpoints")
+
 
 // catch all at this stage of development
 app.use('/*', (req, res, next) => {
