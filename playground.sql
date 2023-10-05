@@ -15,3 +15,10 @@ FROM articles
 LEFT JOIN comments ON comments.article_id = articles.article_id
 GROUP BY articles.article_id
 ORDER BY articles.created_at DESC;
+
+SELECT 
+comment_id, votes, created_at, author, body, article_id
+FROM comments
+WHERE article_id=3;
+
+SELECT article_id FROM articles;
