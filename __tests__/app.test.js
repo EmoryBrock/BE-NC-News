@@ -88,7 +88,7 @@ describe('GET /api/articles', () => {
                 })
             })
     }) 
-    test.skip('returns an array of article objects in desceding by date created', ()=>{
+    test('returns an array of article objects in desceding order by date created', ()=>{
         return request(app)
             .get('/api/articles')
             .then(({ body }) => {
