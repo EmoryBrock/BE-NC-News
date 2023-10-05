@@ -14,4 +14,5 @@ In addition, please be sure install/update the following packages:
 - express
 - pg
 - jest
+- jest-sorted
 
