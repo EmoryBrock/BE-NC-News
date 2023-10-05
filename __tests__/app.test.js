@@ -110,3 +110,20 @@ describe('Endpoint general errors', () => {
             })
         })
 })
+
+describe('GET /api/users', () => {
+    test('responds with a list of all users', ()=> {
+        return request(app)
+            .get('/api/users')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.users).toHaveLength(4)
+                expect(Array.isArray(body.users)).toBe(true)
+                body.users.forEach((user)=>{
+                    expect(typeof user.username).toBe('string')
+                    expect(typeof user.name).toBe('string')
+                    expect(typeof user.avatar_url).toBe('string')
+                })
+            })
+    })
+})
