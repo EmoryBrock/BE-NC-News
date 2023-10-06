@@ -3,6 +3,7 @@ const db = require('../db/connection.js')
 const request = require('supertest');
 const seed = require('../db/seeds/seed.js')
 const data = require('../db/data/test-data/index.js')
+const endpoints = require('../endpoints.json')
 
 beforeEach(()=>{
     return seed(data)
@@ -43,6 +44,13 @@ describe('GET /api', () => {
             expect(siteMap.hasOwnProperty('GET /api/articles')).toBe(true)
             expect(typeof(siteMap['GET /api/articles'].description)).toBe("string")
         })
+    })
+    test('output of GET API matches the endpoint JSON file object', ()=>{
+        return request(app)
+            .get('/api')
+            .then(({ body }) => {
+                expect(body.mapAPI).toEqual(endpoints)
+            })
     })
 })
 
@@ -109,4 +117,42 @@ describe('Endpoint general errors', () => {
                 expect(body.message).toBe('path not found')
             })
         })
-})
+    })
+
+    describe('GET /api/articles/:article_id', ()=>{
+        test('responds with a 200 status code', () => {
+            return request(app)
+                .get('/api/articles/2')
+                .expect(200);
+        })
+        test('responds with the correct article object', ()=>{
+            return request(app)
+                .get('/api/articles/12')
+                .then(({body})=>{
+                    expect(body.article.article_id).toBe(12)
+                    expect(body.article.title).toBe('Moustache')
+                    expect(body.article.topic).toBe('mitch')
+                    expect(body.article.author).toBe('butter_bridge')
+                    expect(body.article.body).toBe('Have you seen the size of that thing?')
+                    expect(body.article.created_at).toBe('2020-10-11T11:24:00.000Z')
+                    expect(body.article.votes).toBe(0)
+                    expect(body.article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
+            })
+    })
+    test('responds with 404 if query is called with a valid number input', () => {
+        return request(app)
+            .get('/api/articles/9999')
+            .expect(404)
+            .then(({body})=> {
+                expect(body.message).toBe('No article found for id 9999')
+            })
+    })
+    test('responds with 400 if query is called with a invalid number input', () => {
+        return request(app)
+            .get('/api/articles/two')
+            .expect(400)
+            .then(({body})=> {
+                expect(body.message).toBe('bad request: this is not a number')
+            })
+    })
+})    
