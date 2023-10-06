@@ -4,14 +4,18 @@ const {getTopics} = require('./controllers/topics.controller.js')
 const {getArticleById} = require('./controllers/articles.contoller.js')
 const {handleCustomErrors, handle500Errors} = require('./controllers/errors.controllers.js')
 const {getsiteMap} = require('./controllers/api.controller.js');
+const {getArticles} = require('./controllers/articles.controller.js')
+
 
 
 // valid endpoints
-app.get("/api/topics", getTopics);
 app.get("/api", getsiteMap)
+app.get("/api/topics", getTopics);
+app.get("/api/articles", getArticles)
 app.get("/api/articles/:article_id", getArticleById)
 
-// console.log(app._router.stack)
+//console.log(app._router.stack.filter(r=>r.route).map(r=r=>r.route.path), "current endpoints")
+
 
 // catch all at this stage of development
 app.all('/*', (req, res, next) => {
