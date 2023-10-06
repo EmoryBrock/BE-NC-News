@@ -45,6 +45,13 @@ describe('GET /api', () => {
             expect(typeof(siteMap['GET /api/articles'].description)).toBe("string")
         })
     })
+    test('output of GET API matches the endpoint JSON file object', ()=>{
+        return request(app)
+            .get('/api')
+            .then(({ body }) => {
+                expect(body.mapAPI).toEqual(endpoints)
+            })
+    })
 })
 
 describe('GET /api/articles', () => {
@@ -112,28 +119,6 @@ describe('Endpoint general errors', () => {
         })
     })
 
-    describe('GET /api', () => {
-        test('responds with 200 status code', () =>{
-            return request(app).get('/api').expect(200);
-        })
-        test('404 status code and error message when passed a misspelled endpoint', ()=>{
-            return request(app)
-                .get("/dpi")
-                .expect(404)
-                .then(({body})=> {
-                    expect(body.message).toBe('path not found')
-                })
-            })
-        // need to add dynamic check for endpoints and descriptions object keys
-        test('output of GET API matches the endpoint JSON file object', ()=>{
-            return request(app)
-                .get('/api')
-                .then(({ body }) => {
-                    expect(body.mapAPI).toEqual(endpoints)
-                })
-        })
-    })
-
     describe('GET /api/articles/:article_id', ()=>{
         test('responds with a 200 status code', () => {
             return request(app)
@@ -154,7 +139,6 @@ describe('Endpoint general errors', () => {
                     expect(body.article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
             })
     })
-    // error testing.  404 if enter a valid number id, 400 Bad request if enter "two" id reject at controller, 
     test('responds with 404 if query is called with a valid number input', () => {
         return request(app)
             .get('/api/articles/9999')
