@@ -71,3 +71,26 @@ You are now connected to database "nc_news_test" as user "eb".
  icellusedkars | Z                                                      |          7 | mitch | 2020-01-07 14:08:00 |     0 | https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700 |             0
 (13 rows)
 
+ comment_id | votes |     created_at      |    author     |          body          | article_id 
+------------+-------+---------------------+---------------+------------------------+------------
+         10 |     0 | 2020-06-20 08:24:00 | icellusedkars | git push origin master |          3
+         11 |     0 | 2020-09-20 00:10:00 | icellusedkars | Ambidextrous marsupial |          3
+(2 rows)
+
+ article_id 
+------------
+          1
+          2
+          3
+          4
+          5
+          6
+          7
+          8
+          9
+         10
+         11
+         12
+         13
+(13 rows)
+
