@@ -40,7 +40,17 @@ exports.postComment = (req, res, next) => {
     const {article_id} = req.params
     const {username, body}= req.body
 
-    insertComment(article_id, username, body).then((comment)=> {
-        res.status(201).send({"username": comment.author, "body": comment.body})
-    })
+    if (!body || !username) return next({ 
+        status: 400, 
+        message: 'bad request'
+    }) 
+
+    fetchArticleById(article_id)
+        .then(() => {
+        return insertComment(article_id, username, body)
+        })
+        .then((comment)=> {
+            res.status(201).send({"username": comment.author, "body": comment.body})
+        })
+        .catch(err => {next(err)})
 }

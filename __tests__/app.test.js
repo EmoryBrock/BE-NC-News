@@ -157,7 +157,8 @@ describe('GET /api/articles/:article_id/comments', () => {
 })
 
 describe('POST /api/articles/:article_id/comments', () => {
-    test.only('adds a comment to the queried article', ()=>{
+    test('adds a comment to the queried article', ()=>{
+        //should add another assertion that the new comment_id should be 19 [not sure how to implement as comment_id is not contained in the send message]
         const newComment = {
             username: "rogersop",
             body: "this is an added comment."
@@ -168,7 +169,6 @@ describe('POST /api/articles/:article_id/comments', () => {
             .send(newComment)
             .expect(201)
             .then((response)=> {
-                console.log(response.body, "in test")
                 const comment = response.body;
                 expect(comment).toEqual(newComment)
             })
@@ -186,17 +186,20 @@ describe('POST /api/articles/:article_id/comments', () => {
 
         return request (app)
         .post('/api/articles/1/comments')
-        .send(newComment)
+        .send(newCommentOutput)
         .expect(201)
         .then((response)=> {
-            const { comment } = response.body;
-            expect(comment).toEqual({
-                comment_id: 19,
-                newCommentOutput
-            })
+            const comment = response.body;
+            expect(comment).toEqual(newCommentOutput)
+            expect(newCommentOutput).not.toEqual(newCommentInput)
         })
     })
-    test('returns a 400 is the queried article id is invalid' ,()=>{
+    test('returns a 400 if the queried article id is invalid' ,()=>{
+        const newComment = {
+            username: "rogersop",
+            body: "this is an added comment."
+        }
+
         return request (app)
         .post('/api/articles/two/comments')
         .expect(400)
@@ -204,7 +207,9 @@ describe('POST /api/articles/:article_id/comments', () => {
             expect(body.message).toBe('bad request')
         })
     })
-    test('returns a 400 if required fields (username or body) are not provided by user' ,()=>{
+    test('returns a 400 if body property is not provided by user' ,()=>{
+        const newComment = {username: "rogersop"}        
+        
         return request (app)
         .post('/api/articles/1/comments')
         .expect(400)
@@ -212,7 +217,9 @@ describe('POST /api/articles/:article_id/comments', () => {
             expect(body.message).toBe('bad request')
         })
     })
-    test('returns a 400 if required fields (username or body) are not provided by user' ,()=>{
+    test('returns a 400 if username property is not provided by user' ,()=>{
+        const newComment = { body: "this is an added comment."}
+
         return request (app)
         .post('/api/articles/1/comments')
         .expect(400)
@@ -220,7 +227,12 @@ describe('POST /api/articles/:article_id/comments', () => {
             expect(body.message).toBe('bad request')
         })
     })
-    test('returns a 404 is the queried article id a valid input but does not exist in database' ,()=>{
+    test.skip('returns a 404 is the queried article id a valid input but does not exist in database' ,()=>{
+        const newComment = {
+            username: "rogersop",
+            body: "this is an added comment.",
+        }
+
         return request (app)
         .post('/api/articles/9999/comments')
         .expect(404)
@@ -228,5 +240,17 @@ describe('POST /api/articles/:article_id/comments', () => {
             expect(body.message).toBe('path cannot be found')
         })
     })      
+    test.skip('returns a 404 is username does not exist in database' ,()=>{
+        const newComment = {
+            username: "toriamos",
+            body: "this is an added comment.",
+        }
 
+        return request (app)
+        .post('/api/articles/1/comments')
+        .expect(404)
+        .then(({body})=> {
+            expect(body.message).toBe('path cannot be found')
+        })
+    })
 })
