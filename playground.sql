@@ -3,6 +3,8 @@
 SELECT * FROM articles;
 SELECT * FROM topics;
 SELECT * FROM comments;
+SELECT * FROM users
+;
 
 SELECT article_id, COUNT(article_id) 
 FROM comments

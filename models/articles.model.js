@@ -60,3 +60,13 @@ exports.insertComment = (article_id, username, body) => {
             return result.rows[0]
         })
 }
+
+//added the for functionality, will move to users.model when endpoint is implemented
+exports.fetchUserByUserName = ()=> {
+    return db
+        .query(`SELECT username FROM users
+                WHERE username=$1;`, [username])
+        .then(({rows}) => {
+            return rows
+        })
+}
