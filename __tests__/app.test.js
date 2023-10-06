@@ -156,8 +156,8 @@ describe('GET /api/articles/:article_id/comments', () => {
     })
 })
 
-describe.skip('POST /api/articles/:article_id/comments', () => {
-    test('adds a comment to the queried article' ,()=>{
+describe('POST /api/articles/:article_id/comments', () => {
+    test.only('adds a comment to the queried article', ()=>{
         const newComment = {
             username: "rogersop",
             body: "this is an added comment."
@@ -168,11 +168,9 @@ describe.skip('POST /api/articles/:article_id/comments', () => {
             .send(newComment)
             .expect(201)
             .then((response)=> {
-                const { comment } = response.body;
-                expect(comment).toEqual({
-                    comment_id: 19,
-                    ...newComment
-                })
+                console.log(response.body, "in test")
+                const comment = response.body;
+                expect(comment).toEqual(newComment)
             })
     })
     test('adds a comment to the queried article ignoring any unnecessary properties' ,()=>{

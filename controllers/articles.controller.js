@@ -37,11 +37,10 @@ exports.getCommentsByArticleID = (req, res, next) => {
 }
 
 exports.postComment = (req, res, next) => {
-    const newComment = req.query
     const {article_id} = req.params
-    console.log(newComment, "pulled from query in controller")
+    const {username, body}= req.body
 
-    insertComment(newComment, article_id).then((comment)=> {
-        res.status(201).send({comment})
+    insertComment(article_id, username, body).then((comment)=> {
+        res.status(201).send({"username": comment.author, "body": comment.body})
     })
 }
