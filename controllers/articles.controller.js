@@ -1,4 +1,7 @@
-const {fetchArticleById, fetchArticles} = require('../models/articles.model.js')
+const {fetchArticleById, 
+    fetchArticles, 
+    fetchCommentsByArticleId,
+    insertComment} = require('../models/articles.model.js')
 
 exports.getArticleById = (req, res, next) => {
     const id = req.params.article_id
@@ -18,5 +21,27 @@ exports.getArticleById = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
     fetchArticles().then((articles) => {
         res.status(200).send({ articles });
+    })
+}
+
+exports.getCommentsByArticleID = (req, res, next) => {
+    const {article_id }= req.params
+
+    Promise.all([fetchArticleById(article_id), fetchCommentsByArticleId(article_id)])
+        .then((results) => {
+            res.status(200).send(results[1])
+            return Promise.all([fetchArticleById(article_id), fetchCommentsByArticleId(article_id)])
+        })
+        .catch(err => {next(err)})
+
+}
+
+exports.postComment = (req, res, next) => {
+    const newComment = req.query
+    const {article_id} = req.params
+    console.log(newComment, "pulled from query in controller")
+
+    insertComment(newComment, article_id).then((comment)=> {
+        res.status(201).send({comment})
     })
 }

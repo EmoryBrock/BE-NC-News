@@ -110,3 +110,125 @@ describe('Endpoint general errors', () => {
             })
         })
 })
+
+describe('GET /api/articles/:article_id/comments', () => {
+    test('returns an array of comment object(s) of the queried article in the correct format', ()=> {
+        return request(app)
+        .get('/api/articles/3/comments')
+        .expect(200)
+        .then(({ body }) => {
+            expect(Array.isArray(body)).toBe(true)
+            expect(body).toBeSortedBy('created_at', {descending: true,})
+            body.forEach((comment)=>{
+                expect(comment).toHaveProperty('comment_id');
+                expect(comment).toHaveProperty('votes');
+                expect(comment).toHaveProperty('created_at');
+                expect(comment).toHaveProperty('author');
+                expect(comment).toHaveProperty('body');
+                expect(comment).toHaveProperty('article_id');    
+            })
+        })
+    })
+    test('returns an empty array if article id does exist but does not have comments', ()=> {
+        return request(app)
+        .get('/api/articles/13/comments')
+        .expect(200)
+        .then(({ body }) => {
+            expect(Array.isArray(body)).toBe(true)
+            expect(body).toEqual([])
+            })
+     })
+    test('returns a 400 if an invalid article_id is provided', ()=>{
+        return request(app)
+        .get('/api/articles/three/comments')
+        .expect(400)
+        .then(({body})=> {
+            expect(body.message).toBe(`bad request`)
+            })
+    })
+    test('returns a 404 if passed an article_id that does not exist in the database', ()=>{
+        return request(app)
+        .get('/api/articles/9999/comments')
+        .expect(404)
+        .then(({body})=> {
+            expect(body.message).toBe(`No article found for id 9999`)
+            })
+    })
+})
+
+describe.skip('POST /api/articles/:article_id/comments', () => {
+    test('adds a comment to the queried article' ,()=>{
+        const newComment = {
+            username: "rogersop",
+            body: "this is an added comment."
+        }
+
+        return request (app)
+            .post('/api/articles/1/comments')
+            .send(newComment)
+            .expect(201)
+            .then((response)=> {
+                const { comment } = response.body;
+                expect(comment).toEqual({
+                    comment_id: 19,
+                    ...newComment
+                })
+            })
+    })
+    test('adds a comment to the queried article ignoring any unnecessary properties' ,()=>{
+        const newCommentInput = {
+            username: "rogersop",
+            body: "this is an added comment.",
+            rank: "daily contributor"
+        }
+        const newCommentOutput = {
+            username: "rogersop",
+            body: "this is an added comment.",
+        }
+
+        return request (app)
+        .post('/api/articles/1/comments')
+        .send(newComment)
+        .expect(201)
+        .then((response)=> {
+            const { comment } = response.body;
+            expect(comment).toEqual({
+                comment_id: 19,
+                newCommentOutput
+            })
+        })
+    })
+    test('returns a 400 is the queried article id is invalid' ,()=>{
+        return request (app)
+        .post('/api/articles/two/comments')
+        .expect(400)
+        .then(({body})=> {
+            expect(body.message).toBe('bad request')
+        })
+    })
+    test('returns a 400 if required fields (username or body) are not provided by user' ,()=>{
+        return request (app)
+        .post('/api/articles/1/comments')
+        .expect(400)
+        .then(({body})=> {
+            expect(body.message).toBe('bad request')
+        })
+    })
+    test('returns a 400 if required fields (username or body) are not provided by user' ,()=>{
+        return request (app)
+        .post('/api/articles/1/comments')
+        .expect(400)
+        .then(({body})=> {
+            expect(body.message).toBe('bad request')
+        })
+    })
+    test('returns a 404 is the queried article id a valid input but does not exist in database' ,()=>{
+        return request (app)
+        .post('/api/articles/9999/comments')
+        .expect(404)
+        .then(({body})=> {
+            expect(body.message).toBe('path cannot be found')
+        })
+    })      
+
+})
