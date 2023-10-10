@@ -227,7 +227,7 @@ describe('POST /api/articles/:article_id/comments', () => {
             expect(body.message).toBe('bad request')
         })
     })
-    test.skip('returns a 404 is the queried article id a valid input but does not exist in database' ,()=>{
+    test('returns a 404 if the queried article id is a valid input but does not exist in database' ,()=>{
         const newComment = {
             username: "rogersop",
             body: "this is an added comment.",
@@ -235,12 +235,13 @@ describe('POST /api/articles/:article_id/comments', () => {
 
         return request (app)
         .post('/api/articles/9999/comments')
+        .send(newComment)
         .expect(404)
         .then(({body})=> {
-            expect(body.message).toBe('path cannot be found')
+            expect(body.message).toBe('No artcile found with id 9999')
         })
     })      
-    test.skip('returns a 404 is username does not exist in database' ,()=>{
+    test('returns a 404 if username does not exist in database' ,()=>{
         const newComment = {
             username: "toriamos",
             body: "this is an added comment.",
@@ -248,9 +249,10 @@ describe('POST /api/articles/:article_id/comments', () => {
 
         return request (app)
         .post('/api/articles/1/comments')
+        .send(newComment)
         .expect(404)
         .then(({body})=> {
-            expect(body.message).toBe('path cannot be found')
+            expect(body.message).toBe('Username does not exist')
         })
     })
 })

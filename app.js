@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const {getTopics} = require('./controllers/topics.controller.js')
 const {getsiteMap} = require('./controllers/api.controller.js');
-const {getArticles, getCommentsByArticleID, postComment} = require('./controllers/articles.controller.js')
+const {getArticles, getCommentsByArticleID, addComment} = require('./controllers/articles.controller.js')
 
 app.use(express.json())
 
@@ -12,7 +12,7 @@ app.get("/api", getsiteMap);
 app.get("/api/articles", getArticles)
 app.get("/api/articles/:article_id/comments", getCommentsByArticleID)
 
-app.post("/api/articles/:article_id/comments", postComment)
+app.post("/api/articles/:article_id/comments", addComment)
 
 // console.log(app._router.stack.filter(r=>r.route).map(r=r=>r.route.path), "current endpoints")
 
@@ -41,7 +41,7 @@ app.use((err, req, res, next) =>{
 
 
 app.use((err, req, res, ext) => {
-    console.log(err)
+    // console.log(err)
     res.status(500).send({ message: 'internal server error'})
 })
 

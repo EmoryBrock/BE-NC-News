@@ -1,7 +1,9 @@
 const {fetchArticleById, 
     fetchArticles, 
     fetchCommentsByArticleId,
-    insertComment} = require('../models/articles.model.js')
+    insertComment,
+    isValidUsername,
+    isValidArticleID} = require('../models/articles.model.js')
 
 exports.getArticleById = (req, res, next) => {
     const id = req.params.article_id
@@ -30,13 +32,13 @@ exports.getCommentsByArticleID = (req, res, next) => {
     Promise.all([fetchArticleById(article_id), fetchCommentsByArticleId(article_id)])
         .then((results) => {
             res.status(200).send(results[1])
-            return Promise.all([fetchArticleById(article_id), fetchCommentsByArticleId(article_id)])
+            return results
         })
         .catch(err => {next(err)})
 
 }
 
-exports.postComment = (req, res, next) => {
+exports.addComment = (req, res, next) => {
     const {article_id} = req.params
     const {username, body}= req.body
 
@@ -45,12 +47,15 @@ exports.postComment = (req, res, next) => {
         message: 'bad request'
     }) 
 
-    fetchArticleById(article_id)
-        .then(() => {
-        return insertComment(article_id, username, body)
+    Promise.all([isValidArticleID(article_id), isValidUsername(username)])
+        .then(()=>{
+            return insertComment(article_id, username, body)
         })
         .then((comment)=> {
+            console.log(comment, "returned from model")
             res.status(201).send({"username": comment.author, "body": comment.body})
         })
-        .catch(err => {next(err)})
+        .catch(err => {
+            console.log(err)
+            next(err)})
 }
