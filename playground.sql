@@ -3,6 +3,12 @@
 SELECT * FROM articles;
 SELECT * FROM topics;
 SELECT * FROM comments;
+SELECT * FROM users;
+
+SELECT * FROM users
+WHERE username='rogersop';
+
+
 
 SELECT article_id, COUNT(article_id) 
 FROM comments

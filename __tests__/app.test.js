@@ -120,6 +120,44 @@ describe('Endpoint general errors', () => {
         })
 })
 
+describe('GET /api/articles/:article_id', ()=>{
+    test('responds with a 200 status code', () => {
+        return request(app)
+            .get('/api/articles/2')
+            .expect(200);
+    })
+    test('responds with the correct article object', ()=>{
+        return request(app)
+            .get('/api/articles/12')
+            .then(({body})=>{
+                expect(body.article.article_id).toBe(12)
+                expect(body.article.title).toBe('Moustache')
+                expect(body.article.topic).toBe('mitch')
+                expect(body.article.author).toBe('butter_bridge')
+                expect(body.article.body).toBe('Have you seen the size of that thing?')
+                expect(body.article.created_at).toBe('2020-10-11T11:24:00.000Z')
+                expect(body.article.votes).toBe(0)
+                expect(body.article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
+        })
+})
+test('responds with 404 if query is called with a valid number input', () => {
+    return request(app)
+        .get('/api/articles/9999')
+        .expect(404)
+        .then(({body})=> {
+            expect(body.message).toBe('No article found for id 9999')
+        })
+})
+test('responds with 400 if query is called with a invalid number input', () => {
+    return request(app)
+        .get('/api/articles/two')
+        .expect(400)
+        .then(({body})=> {
+            expect(body.message).toBe('bad request: this is not a number')
+        })
+})
+})  
+
 describe('GET /api/articles/:article_id/comments', () => {
     test('returns an array of comment object(s) of the queried article in the correct format', ()=> {
         return request(app)
@@ -164,43 +202,104 @@ describe('GET /api/articles/:article_id/comments', () => {
             })
     })
 })
-        
 
+describe('POST /api/articles/:article_id/comments', () => {
+    test('adds a comment to the queried article', ()=>{
+        //should add another assertion that the new comment_id should be 19 [not sure how to implement as comment_id is not contained in the send message]
+        const newComment = {
+            username: "rogersop",
+            body: "this is an added comment."
+        }
 
-    describe('GET /api/articles/:article_id', ()=>{
-        test('responds with a 200 status code', () => {
-            return request(app)
-                .get('/api/articles/2')
-                .expect(200);
+        return request (app)
+            .post('/api/articles/1/comments')
+            .send(newComment)
+            .expect(201)
+            .then((response)=> {
+                const comment = response.body;
+                expect(comment).toEqual(newComment)
+            })
+    })
+    test('adds a comment to the queried article while ignoring any unnecessary properties' ,()=>{
+        const newCommentInput = {
+            username: "rogersop",
+            body: "this is an added comment.",
+            rank: "daily contributor"
+        }
+        const newCommentOutput = {
+            username: "rogersop",
+            body: "this is an added comment.",
+        }
+
+        return request (app)
+        .post('/api/articles/1/comments')
+        .send(newCommentOutput)
+        .expect(201)
+        .then((response)=> {
+            const comment = response.body;
+            expect(comment).toEqual(newCommentOutput)
+            expect(newCommentOutput).not.toEqual(newCommentInput)
         })
-        test('responds with the correct article object', ()=>{
-            return request(app)
-                .get('/api/articles/12')
-                .then(({body})=>{
-                    expect(body.article.article_id).toBe(12)
-                    expect(body.article.title).toBe('Moustache')
-                    expect(body.article.topic).toBe('mitch')
-                    expect(body.article.author).toBe('butter_bridge')
-                    expect(body.article.body).toBe('Have you seen the size of that thing?')
-                    expect(body.article.created_at).toBe('2020-10-11T11:24:00.000Z')
-                    expect(body.article.votes).toBe(0)
-                    expect(body.article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
-            })
     })
-    test('responds with 404 if query is called with a valid number input', () => {
-        return request(app)
-            .get('/api/articles/9999')
-            .expect(404)
-            .then(({body})=> {
-                expect(body.message).toBe('No article found for id 9999')
-            })
+    test('returns a 400 if the queried article id is invalid' ,()=>{
+        const newComment = {
+            username: "rogersop",
+            body: "this is an added comment."
+        }
+
+        return request (app)
+        .post('/api/articles/two/comments')
+        .expect(400)
+        .then(({body})=> {
+            expect(body.message).toBe('bad request')
+        })
     })
-    test('responds with 400 if query is called with a invalid number input', () => {
-        return request(app)
-            .get('/api/articles/two')
-            .expect(400)
-            .then(({body})=> {
-                expect(body.message).toBe('bad request: this is not a number')
-            })
+    test('returns a 400 if body property is not provided by user' ,()=>{
+        const newComment = {username: "rogersop"}        
+        
+        return request (app)
+        .post('/api/articles/1/comments')
+        .expect(400)
+        .then(({body})=> {
+            expect(body.message).toBe('bad request')
+        })
     })
-})    
+    test('returns a 400 if username property is not provided by user' ,()=>{
+        const newComment = { body: "this is an added comment."}
+
+        return request (app)
+        .post('/api/articles/1/comments')
+        .expect(400)
+        .then(({body})=> {
+            expect(body.message).toBe('bad request')
+        })
+    })
+    test('returns a 404 if the queried article id is a valid input but does not exist in database' ,()=>{
+        const newComment = {
+            username: "rogersop",
+            body: "this is an added comment.",
+        }
+
+        return request (app)
+        .post('/api/articles/9999/comments')
+        .send(newComment)
+        .expect(404)
+        .then(({body})=> {
+            expect(body.message).toBe('No article found with id 9999')
+        })
+    })      
+    test('returns a 404 if username does not exist in database' ,()=>{
+        const newComment = {
+            username: "toriamos",
+            body: "this is an added comment.",
+        }
+
+        return request (app)
+        .post('/api/articles/1/comments')
+        .send(newComment)
+        .expect(404)
+        .then(({body})=> {
+            expect(body.message).toBe('Username does not exist')
+        })
+    })
+})
