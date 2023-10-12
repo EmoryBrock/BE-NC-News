@@ -5,6 +5,7 @@ const {fetchArticleById,
     isValidUsername,
     isValidArticleID} = require('../models/articles.model.js')
 
+
 exports.getArticleById = (req, res, next) => {
     const id = req.params.article_id
 
@@ -13,7 +14,10 @@ exports.getArticleById = (req, res, next) => {
         message: 'bad request: this is not a number'
     })
 
-    fetchArticleById(id)
+    isValidArticleID(id)
+    .then(()=>{
+            return fetchArticleById(id)
+        })
         .then((article) => {
             res.status(200).send({article})
         })
@@ -52,10 +56,8 @@ exports.addComment = (req, res, next) => {
             return insertComment(article_id, username, body)
         })
         .then((comment)=> {
-            console.log(comment, "returned from model")
             res.status(201).send({"username": comment.author, "body": comment.body})
         })
         .catch(err => {
-            console.log(err)
             next(err)})
-}
+        }            

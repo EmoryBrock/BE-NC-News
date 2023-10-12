@@ -1,4 +1,4 @@
-const db = require('../db/connection');
+const db = require('../db/connection.js')
 
 exports.isValidArticleID = (id) => {
     return db
@@ -7,7 +7,7 @@ exports.isValidArticleID = (id) => {
             if (rows.length === 0) {
                 return Promise.reject({
                     status:404,
-                    message: `No artcile found with id ${id}`
+                    message: `No article found with id ${id}`
                 })
             }
             return rows[0]
@@ -63,11 +63,6 @@ exports.fetchCommentsByArticleId = (id) =>{
 }
 
 exports.insertComment = (article_id, username, body) => {   
-    
-    // let article_id = 1
-    // let body = "This is a new comment to track"
-    // let username = 'rogersop'
-    
     return db
         .query(
             `INSERT INTO comments 
