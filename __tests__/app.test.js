@@ -303,3 +303,76 @@ describe('POST /api/articles/:article_id/comments', () => {
         })
     })
 })
+
+
+
+describe.only('PATCH /api/articles/:article_id', () => {
+    test('responds with 200 and the queried article object with the votes increased by stated amount', ()=>{
+        const newVotesUpdate = {inc_votes: 100}
+        return request(app)
+            .patch('/api/articles/12')
+            .send(newVotesUpdate)
+            .expect(200)
+            .then(({body})=>{
+                expect(body.article).toMatchObject({
+                    article_id: 12,
+                    title: 'Moustache',
+                    topic: 'mitch',
+                    author: 'butter_bridge',
+                    body: 'Have you seen the size of that thing?',
+                    created_at: '2020-10-11T11:24:00.000Z',
+                    votes: 100,
+                    article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+                })
+            })
+    })
+    test('responds with 200 and the queried article object with the votes decreased by stated amount', ()=>{
+        const newVotesUpdate = {inc_votes: -100}
+        return request(app)
+            .patch('/api/articles/12')
+            .send(newVotesUpdate)
+            .expect(200)
+            .then(({body})=>{
+                expect(body.article).toMatchObject({
+                    article_id: 12,
+                    title: 'Moustache',
+                    topic: 'mitch',
+                    author: 'butter_bridge',
+                    body: 'Have you seen the size of that thing?',
+                    created_at: '2020-10-11T11:24:00.000Z',
+                    votes: -100,
+                    article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+                })
+            })
+    })
+    test('responds with 400 the queried article id is invalid', ()=>{
+        const newVotesUpdate = {inc_votes: 100}
+        return request(app)
+            .patch('/api/articles/two')
+            .send(newVotesUpdate)
+            .expect(400)
+            .then(({body})=> {
+                expect(body.message).toBe('bad request')
+            })
+        })
+    test('responds with 400 if passed inc_votes is not a number', ()=>{
+        const newVotesUpdate = {inc_votes: "one hundred"}
+        return request(app)
+            .patch('/api/articles/two')
+            .send(newVotesUpdate)
+            .expect(400)
+            .then(({body})=> {
+                expect(body.message).toBe('bad request')
+        })
+    })
+    test('responds with 404 if passed a number article id that does not exist', ()=>{
+        const newVotesUpdate = {inc_votes: 100}
+        return request(app)
+            .patch('/api/articles/9999')
+            .send(newVotesUpdate)
+            .expect(404)
+            .then(({body})=> {
+                expect(body.message).toBe('No article found with id 9999')
+        })
+    })       
+})

@@ -91,3 +91,26 @@ exports.isValidUsername = (username)=> {
             return rows
         })
 }
+
+exports.calcNewVotes = (id, newVotes) => {
+    return db
+        .query(`
+            SELECT votes FROM articles 
+            WHERE article_id=$1`, [id])
+        .then(({rows})=> {
+            const currentVotes = rows[0].votes
+            return updatedVotes = currentVotes + newVotes
+        })
+}
+
+exports.updateVotesByArticleID = (id, updatedVotes) => {
+    return db
+        .query(`
+            UPDATE articles
+            SET votes=$1
+            WHERE article_id=$2
+            RETURNING *;`, [updatedVotes, id])
+        .then(({rows})=> {
+            return rows[0]
+    })
+}
