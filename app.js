@@ -3,7 +3,6 @@ const app = express();
 const {getTopics} = require('./controllers/topics.controller.js')
 const {handlePSQLErrors, handleCustomErrors, handle500Errors} = require('./controllers/errors.controller.js')
 const {getsiteMap} = require('./controllers/api.controller.js');
-const {getArticles} = require('./controllers/articles.controller.js')
 const {getAllUsers} = require('./controllers/users.controller.js')
 const {getArticleById, getArticles, getCommentsByArticleID, addComment, patchVotesByArticleID} = require('./controllers/articles.controller.js')
 const {deleteCommentByID} = require('./controllers/comments.controller.js')
