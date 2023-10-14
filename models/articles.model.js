@@ -104,15 +104,13 @@ exports.calcNewVotes = (id, newVotes) => {
 }
 
 exports.updateVotesByArticleID = (id, updatedVotes) => {
-    console.log(updatedVotes, id, "passed from controller to model")
     return db
-    .query(`
-        UPDATE articles
-        SET votes=$1
-        WHERE article_id=$2
-        RETURNING *;`, [updatedVotes, id])
-    .then(({rows})=> {
-        console.log(rows[0])
-        return rows[0]
+        .query(`
+            UPDATE articles
+            SET votes=$1
+            WHERE article_id=$2
+            RETURNING *;`, [updatedVotes, id])
+        .then(({rows})=> {
+            return rows[0]
     })
 }

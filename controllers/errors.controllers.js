@@ -18,5 +18,5 @@ exports.handleCustomErrors = (err,req,res, next) => {
 
 exports.handle500Errors = (err, req, res, next) => {
     // console.log(err, 'ERROR: unhandled error')
-    return res.status(500).send({ message: 'I.S.E. something broke'})
+    return res.status(500).send({ message: 'internal sever error - something broke'})
 }

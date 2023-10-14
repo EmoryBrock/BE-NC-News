@@ -70,11 +70,11 @@ exports.patchVotesByArticleID = (req, res, next) => {
 
     calcNewVotes(id, newVotes)
     .then((updatedVotes)=>{
-        console.log(updatedVotes, "return from calc");
         return updateVotesByArticleID(id, updatedVotes)
     })
     .then((article)=>{
         res.status(200).send({article})
     })
+    .catch(err => {next(err)})
 
 }
