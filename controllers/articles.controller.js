@@ -4,6 +4,7 @@ const {fetchArticleById,
     insertComment,
     isValidUsername,
     isValidArticleID,
+    calcNewVotes,
     updateVotesByArticleID} = require('../models/articles.model.js')
 
 
@@ -66,8 +67,12 @@ exports.addComment = (req, res, next) => {
 exports.patchVotesByArticleID = (req, res, next) => {
     const id = req.params.article_id
     const newVotes = req.body.inc_votes
-    console.log(id, newVotes)
-    updateVotesByArticleID(id, newVotes)
+
+    calcNewVotes(id, newVotes)
+    .then((updatedVotes)=>{
+        console.log(updatedVotes, "return from calc");
+        return updateVotesByArticleID(id, updatedVotes)
+    })
     .then((article)=>{
         res.status(200).send({article})
     })

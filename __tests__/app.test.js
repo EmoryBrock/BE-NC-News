@@ -307,7 +307,7 @@ describe('POST /api/articles/:article_id/comments', () => {
 
 
 describe.only('PATCH /api/articles/:article_id', () => {
-    test('responds with the queried article object with the votes updated by stated amount', ()=>{
+    test.only('responds with 200 and the queried article object with the votes updated by stated amount', ()=>{
         const newVotesUpdate = {inc_votes: 100}
         return request(app)
             .patch('/api/articles/12')

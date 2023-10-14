@@ -96,27 +96,21 @@ exports.calcNewVotes = (id, newVotes) => {
     return db
         .query(`
             SELECT votes FROM articles 
-            WHERE article_id=$1
-            RETURNING *;`, [id])
+            WHERE article_id=$1`, [id])
         .then(({rows})=> {
-            console.log(rows[0].votes);
-            return rows[0].votes
-        })
-        .then((currentVotes) => {
-            const updatedVotes = currentVotes + newVotes
-        // if (updatedVotes < 0)  return 0
-            return updatedVotes
+            const currentVotes = rows[0].votes
+            return updatedVotes = currentVotes + newVotes
         })
 }
 
-exports.updateVotesByArticleID = (id, newVotes) => {
-   console.log(id, newVotes, "in model")
+exports.updateVotesByArticleID = (id, updatedVotes) => {
+    console.log(updatedVotes, id, "passed from controller to model")
     return db
     .query(`
         UPDATE articles
-        SET votes = $1 + $2
-        WHERE article_id=$3
-        RETURNING *;`, [votes, newVotes, id])
+        SET votes=$1
+        WHERE article_id=$2
+        RETURNING *;`, [updatedVotes, id])
     .then(({rows})=> {
         console.log(rows[0])
         return rows[0]
