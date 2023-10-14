@@ -349,9 +349,20 @@ describe.only('PATCH /api/articles/:article_id', () => {
         const newVotesUpdate = {inc_votes: 100}
         return request(app)
             .patch('/api/articles/two')
+            .send(newVotesUpdate)
             .expect(400)
             .then(({body})=> {
                 expect(body.message).toBe('bad request')
             })
         })
+        test('responds with 400 if passed inc_votes is not a number', ()=>{
+            const newVotesUpdate = {inc_votes: "one hundred"}
+            return request(app)
+                .patch('/api/articles/two')
+                .send(newVotesUpdate)
+                .expect(400)
+                .then(({body})=> {
+                    expect(body.message).toBe('bad request')
+                })
+            })    
 })
