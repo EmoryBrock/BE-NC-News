@@ -68,13 +68,16 @@ exports.patchVotesByArticleID = (req, res, next) => {
     const id = req.params.article_id
     const newVotes = req.body.inc_votes
 
-    calcNewVotes(id, newVotes)
-    .then((updatedVotes)=>{
-        return updateVotesByArticleID(id, updatedVotes)
-    })
-    .then((article)=>{
-        res.status(200).send({article})
-    })
-    .catch(err => {next(err)})
+    isValidArticleID(id)
+        .then (()=> {
+            return calcNewVotes(id, newVotes)
+        })
+        .then((updatedVotes)=>{
+            return updateVotesByArticleID(id, updatedVotes)
+        })
+        .then((article)=>{
+            res.status(200).send({article})
+        })
+        .catch(err => {next(err)})
 
 }
