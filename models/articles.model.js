@@ -91,3 +91,34 @@ exports.isValidUsername = (username)=> {
             return rows
         })
 }
+
+exports.calcNewVotes = (id, newVotes) => {
+    return db
+        .query(`
+            SELECT votes FROM articles 
+            WHERE article_id=$1
+            RETURNING *;`, [id])
+        .then(({rows})=> {
+            console.log(rows[0].votes);
+            return rows[0].votes
+        })
+        .then((currentVotes) => {
+            const updatedVotes = currentVotes + newVotes
+        // if (updatedVotes < 0)  return 0
+            return updatedVotes
+        })
+}
+
+exports.updateVotesByArticleID = (id, newVotes) => {
+   console.log(id, newVotes, "in model")
+    return db
+    .query(`
+        UPDATE articles
+        SET votes = $1 + $2
+        WHERE article_id=$3
+        RETURNING *;`, [votes, newVotes, id])
+    .then(({rows})=> {
+        console.log(rows[0])
+        return rows[0]
+    })
+}

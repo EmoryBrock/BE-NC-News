@@ -3,7 +3,8 @@ const {fetchArticleById,
     fetchCommentsByArticleId,
     insertComment,
     isValidUsername,
-    isValidArticleID} = require('../models/articles.model.js')
+    isValidArticleID,
+    updateVotesByArticleID} = require('../models/articles.model.js')
 
 
 exports.getArticleById = (req, res, next) => {
@@ -60,4 +61,15 @@ exports.addComment = (req, res, next) => {
         })
         .catch(err => {
             next(err)})
-        }            
+        }
+
+exports.patchVotesByArticleID = (req, res, next) => {
+    const id = req.params.article_id
+    const newVotes = req.body.inc_votes
+    console.log(id, newVotes)
+    updateVotesByArticleID(id, newVotes)
+    .then((article)=>{
+        res.status(200).send({article})
+    })
+
+}

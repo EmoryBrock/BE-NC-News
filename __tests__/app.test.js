@@ -303,3 +303,27 @@ describe('POST /api/articles/:article_id/comments', () => {
         })
     })
 })
+
+
+
+describe.only('PATCH /api/articles/:article_id', () => {
+    test('responds with the queried article object with the votes updated by stated amount', ()=>{
+        const newVotesUpdate = {inc_votes: 100}
+        return request(app)
+            .patch('/api/articles/12')
+            .send(newVotesUpdate)
+            .expect(200)
+            .then(({body})=>{
+                expect(body.article).toMatchObject({
+                    article_id: 12,
+                    title: 'Moustache',
+                    topic: 'mitch',
+                    author: 'butter_bridge',
+                    body: 'Have you seen the size of that thing?',
+                    created_at: '2020-10-11T11:24:00.000Z',
+                    votes: 100,
+                    article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+                })
+            })
+    })
+})
