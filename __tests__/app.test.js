@@ -145,7 +145,7 @@ test('responds with 404 if query is called with a valid number input', () => {
         .get('/api/articles/9999')
         .expect(404)
         .then(({body})=> {
-            expect(body.message).toBe('No article found for id 9999')
+            expect(body.message).toBe('No article found with id 9999')
         })
 })
 test('responds with 400 if query is called with a invalid number input', () => {
@@ -304,9 +304,7 @@ describe('POST /api/articles/:article_id/comments', () => {
     })
 })
 
-
-
-describe.only('PATCH /api/articles/:article_id', () => {
+describe('PATCH /api/articles/:article_id', () => {
     test('responds with 200 and the queried article object with the votes increased by stated amount', ()=>{
         const newVotesUpdate = {inc_votes: 100}
         return request(app)
@@ -375,4 +373,28 @@ describe.only('PATCH /api/articles/:article_id', () => {
                 expect(body.message).toBe('No article found with id 9999')
         })
     })       
+})
+
+describe.only('DELETE /api/comments/:comment_id', () => {
+    test('responds with 204 that the queried comment id was deleted', ()=>{
+        return request(app)
+            .delete('/api/comments/18')
+            .expect(204)
+    })
+    test('responds with 404 that queried comment id is a valid number input but does not exist in database ', ()=>{
+        return request(app)
+            .delete('/api/comments/23')
+            .expect(404)
+            .then(({body})=> {
+                expect(body.message).toBe('No comment found with id 23')
+            })
+    })
+    test('responds with 400 that queried comment id is invalid ', ()=>{
+        return request(app)
+            .delete('/api/comments/five')
+            .expect(400)
+            .then(({body})=> {
+                expect(body.message).toBe('bad request')
+            })
+    })
 })
