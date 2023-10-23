@@ -29,7 +29,7 @@ describe('GET /api/topics', () => {
 })
 // NEED TO FIX
 // describe('GET /api', () => {
-//     test('returns an object describing the valid inital TEST endpoints',() => {
+//     test('returns an object describing the valid initial TEST endpoints',() => {
 //         return request(app)
 //         .get('/api')
 //         .expect(200)
@@ -376,7 +376,7 @@ describe('PATCH /api/articles/:article_id', () => {
     })       
 })
 
-describe.only('DELETE /api/comments/:comment_id', () => {
+describe('DELETE /api/comments/:comment_id', () => {
     test('responds with 204 that the queried comment id was deleted', ()=>{
         return request(app)
             .delete('/api/comments/18')
@@ -417,19 +417,42 @@ describe('GET /api/users', () => {
     })
 })
 
-describe('GET /api/users', () => {
-    test('responds with a list of all users', ()=> {
+describe.skip('GET /api/articles?topic', () => {
+    test('returns an array of article with the queried topic', ()=> {
         return request(app)
-            .get('/api/users')
-            .expect(200)
-            .then(({ body }) => {
-                expect(body.users).toHaveLength(4)
-                expect(Array.isArray(body.users)).toBe(true)
-                body.users.forEach((user)=>{
-                    expect(typeof user.username).toBe('string')
-                    expect(typeof user.name).toBe('string')
-                    expect(typeof user.avatar_url).toBe('string')
-                })
+        .get('/api/articles?topic=cats')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toHaveLength(1)
+            expect(body.articles.topic).toBe("cats")
+            body.articles.forEach((articles)=>{
+                expect(articles).toHaveProperty('author');
+                expect(articles).toHaveProperty('title');
+                expect(articles).toHaveProperty('article_id');
+                expect(articles).toHaveProperty('topic');
+                expect(articles).toHaveProperty('created_at');
+                expect(articles).toHaveProperty('votes');
+                expect(articles).toHaveProperty('article_img_url');
+                expect(articles).toHaveProperty('comment_count');
             })
+        })
     })
-})
+    test.skip('returns an empty array if passed a valid topic query item in the database', ()=> {
+        return request(app)
+        .get('/api/articles?topic=paper')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toHaveLength(0)
+            expect(body.articles).toEqual([])
+        })
+    })
+    test.skip('returns 404 if passed an invalid topic query item that is not in the database', ()=> {
+        return request(app)
+        .get('/api/articles?topic=gundam')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.articles).toHaveLength(0)
+            expect(body.articles).toEqual([])
+        })
+    })
+}) 

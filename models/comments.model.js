@@ -15,14 +15,12 @@ exports.isValidCommentID = (id) => {
 }
 
 exports.deleteCommentByCommentID = (id) => {
-    console.log(id, "in model");
     return db
         .query(`
             DELETE FROM comments
             WHERE comment_id=$1
             RETURNING *;`, [id])
         .then(({rows})=> {
-            console.log(rows)
-            // return rows[0]
+            return rows[0]
         })
 }
