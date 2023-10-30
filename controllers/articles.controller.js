@@ -6,6 +6,7 @@ const {fetchArticleById,
     isValidArticleID,
     calcNewVotes,
     updateVotesByArticleID} = require('../models/articles.model.js')
+const { isValidTopic } = require('../models/topics.model.js')
 
 
 exports.getArticleById = (req, res, next) => {
@@ -27,10 +28,23 @@ exports.getArticleById = (req, res, next) => {
 }
 
 exports.getArticles = (req, res, next) => {
-    // const { topic } = req.query
-    fetchArticles().then((articles) => {
+    const { topic } = req.query
+
+    if (!topic) {
+        return fetchArticles(topic)
+            .then((articles) => {
+                res.status(200).send( {articles} );
+            })
+        }
+
+    isValidTopic(topic)
+    .then(()=>{
+        return fetchArticles(topic)
+    })
+    .then((articles) => {
         res.status(200).send( {articles} );
     })
+    .catch(err => {next(err)})    
 }
 
 exports.getCommentsByArticleID = (req, res, next) => {
