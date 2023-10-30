@@ -417,27 +417,29 @@ describe('GET /api/users', () => {
     })
 })
 
-describe.skip('GET /api/articles?topic', () => {
+describe('GET /api/articles?topic', () => {
     test('returns an array of article with the queried topic', ()=> {
         return request(app)
         .get('/api/articles?topic=cats')
         .expect(200)
-        .then(({ body }) => {
-            expect(body.articles).toHaveLength(1)
-            expect(body.articles.topic).toBe("cats")
-            body.articles.forEach((articles)=>{
-                expect(articles).toHaveProperty('author');
-                expect(articles).toHaveProperty('title');
-                expect(articles).toHaveProperty('article_id');
-                expect(articles).toHaveProperty('topic');
-                expect(articles).toHaveProperty('created_at');
-                expect(articles).toHaveProperty('votes');
-                expect(articles).toHaveProperty('article_img_url');
-                expect(articles).toHaveProperty('comment_count');
+        .then(( {body} ) => {
+            const {articles} = body
+
+            expect(articles).toHaveLength(1)
+            articles.forEach((article)=>{
+                expect(article.topic).toBe('cats')
+                expect(article).toHaveProperty('author');
+                expect(article).toHaveProperty('title');
+                expect(article).toHaveProperty('article_id');
+                expect(article).toHaveProperty('topic');
+                expect(article).toHaveProperty('created_at');
+                expect(article).toHaveProperty('votes');
+                expect(article).toHaveProperty('article_img_url');
+                expect(article).toHaveProperty('comment_count');
             })
         })
     })
-    test.skip('returns an empty array if passed a valid topic query item in the database', ()=> {
+    test('returns an empty array if passed a valid topic query item in the database', ()=> {
         return request(app)
         .get('/api/articles?topic=paper')
         .expect(200)
@@ -446,13 +448,12 @@ describe.skip('GET /api/articles?topic', () => {
             expect(body.articles).toEqual([])
         })
     })
-    test.skip('returns 404 if passed an invalid topic query item that is not in the database', ()=> {
+    test('returns 404 if passed an invalid topic query item that is not in the database', ()=> {
         return request(app)
         .get('/api/articles?topic=gundam')
         .expect(404)
         .then(({ body }) => {
-            expect(body.articles).toHaveLength(0)
-            expect(body.articles).toEqual([])
+            expect(body.message).toBe('bad request')
         })
     })
 }) 

@@ -30,9 +30,10 @@ exports.fetchArticleById = (id) => {
         })
 }
 
-exports.fetchArticles = () => {
+exports.fetchArticles = (topic) => {
 
-    let query = `SELECT
+    const queryValues =[]
+    let queryStr = `SELECT
     articles.author,
     articles.title, 
     articles.article_id, 
@@ -42,12 +43,20 @@ exports.fetchArticles = () => {
     articles.article_img_url, 
     COUNT(comments.article_id) AS comment_count
     FROM articles
-    LEFT JOIN comments ON comments.article_id = articles.article_id
+    LEFT JOIN comments ON comments.article_id = articles.article_id`
+
+    if (topic) {
+        queryValues.push(topic)
+        queryStr += `
+        WHERE articles.topic = $1`
+    }
+
+    queryStr += `
     GROUP BY articles.article_id
     ORDER BY articles.created_at DESC;`
 
     return db
-        .query(query)
+        .query(queryStr, queryValues)
         .then(({rows}) => {
             return rows
         })
