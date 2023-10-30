@@ -1,5 +1,4 @@
-const {deleteCommentByCommentID, isValidCommentID} = require('../models/comments.model.js')
-
+const {deleteCommentByCommentID, isValidCommentID } = require('../models/comments.model.js')
 
 exports.deleteCommentByID = (req, res, next) => {
     const id = req.params.comment_id

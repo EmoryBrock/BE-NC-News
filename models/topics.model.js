@@ -14,7 +14,6 @@ exports.isValidTopic= (topic) => {
         })
 }
 
-
 exports.fetchTopics = () => {
     return db
         .query("SELECT * FROM topics;")

@@ -1,12 +1,11 @@
 const {fetchArticleById, 
     fetchArticles, 
-    fetchCommentsByArticleId,
-    insertComment,
-    isValidUsername,
     isValidArticleID,
     calcNewVotes,
     updateVotesByArticleID} = require('../models/articles.model.js')
 const { isValidTopic } = require('../models/topics.model.js')
+const { fetchCommentsByArticleId, insertComment} = require('../models/comments.model.js')
+const { isValidUsername } = require('../models/users.model.js')
 
 
 exports.getArticleById = (req, res, next) => {
