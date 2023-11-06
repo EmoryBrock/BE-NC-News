@@ -27,10 +27,10 @@ exports.getArticleById = (req, res, next) => {
 }
 
 exports.getArticles = (req, res, next) => {
-    const { topic } = req.query
+    const { topic, order } = req.query
 
     if (!topic) {
-        return fetchArticles(topic)
+        return fetchArticles(topic, order)
             .then((articles) => {
                 res.status(200).send( {articles} );
             })
@@ -38,7 +38,7 @@ exports.getArticles = (req, res, next) => {
 
     isValidTopic(topic)
     .then(()=>{
-        return fetchArticles(topic)
+        return fetchArticles(topic, order)
     })
     .then((articles) => {
         res.status(200).send( {articles} );

@@ -29,7 +29,7 @@ exports.fetchArticleById = (id) => {
         })
 }
 
-exports.fetchArticles = (topic) => {
+exports.fetchArticles = (topic, order) => {
 
     const queryValues =[]
     let queryStr = `SELECT
@@ -44,15 +44,21 @@ exports.fetchArticles = (topic) => {
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id`
 
-    if (topic) {
-        queryValues.push(topic)
+    if (topic !== undefined) {
         queryStr += `
-        WHERE articles.topic = $1`
+        WHERE articles.topic = $${queryValues.length + 1}`
+        queryValues.push(topic)
     }
 
     queryStr += `
     GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC;`
+    `
+
+    if (order === 'ASC') {
+        queryStr += `ORDER BY articles.created_at ASC`
+    } else {
+        queryStr += `ORDER BY articles.created_at DESC;`
+    }
 
     return db
         .query(queryStr, queryValues)

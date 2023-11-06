@@ -74,7 +74,7 @@ describe('GET /api/articles', () => {
             })
         })
     }) 
-    test('returns an array of article objects in desceding order by date created', ()=>{
+    test('returns an array of article objects in descending order by date created', ()=>{
         return request(app)
         .get('/api/articles')
         .then(({ body }) => {
@@ -457,3 +457,21 @@ describe('GET /api/articles?topic', () => {
         })
     })
 }) 
+describe('GET /api/articles?order', () => {
+    test('returns an array of article objects in ascending order by date created when queried ?order=asc', ()=>{
+        return request(app)
+        .get('/api/articles?order=ASC')
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy('created_at', {ascending: true,
+            })
+        })
+    })
+    test('returns an array of article objects in descending order by date created when queried ?order=asc', ()=>{
+        return request(app)
+        .get('/api/articles?order=DESC')
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy('created_at', {descending: true,
+            })
+        })
+    })
+})
