@@ -120,7 +120,6 @@ describe('Endpoint general errors', () => {
         })
 })
 
-
 describe('GET /api/articles/:article_id', ()=>{
     test('responds with a 200 status code', () => {
         return request(app)
@@ -457,6 +456,7 @@ describe('GET /api/articles?topic', () => {
         })
     })
 }) 
+
 describe('GET /api/articles?order', () => {
     test('returns an array of article objects in ascending order by date created when queried ?order=asc', ()=>{
         return request(app)
