@@ -10,10 +10,9 @@ exports.isValidArticleID = (id) => {
                     message: `No article found with id ${id}`
                 })
             }
-            return rows[0]
+            return true
         })
 }
-
 
 exports.fetchArticleById = (id) => {
     return db
@@ -30,7 +29,7 @@ exports.fetchArticleById = (id) => {
         })
 }
 
-exports.fetchArticles = (topic) => {
+exports.fetchArticles = (topic, order) => {
 
     const queryValues =[]
     let queryStr = `SELECT
@@ -45,15 +44,21 @@ exports.fetchArticles = (topic) => {
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id`
 
-    if (topic) {
-        queryValues.push(topic)
+    if (topic !== undefined) {
         queryStr += `
-        WHERE articles.topic = $1`
+        WHERE articles.topic = $${queryValues.length + 1}`
+        queryValues.push(topic)
     }
 
     queryStr += `
     GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC;`
+    `
+
+    if (order === 'ASC') {
+        queryStr += `ORDER BY articles.created_at ASC`
+    } else {
+        queryStr += `ORDER BY articles.created_at DESC;`
+    }
 
     return db
         .query(queryStr, queryValues)
@@ -62,46 +67,6 @@ exports.fetchArticles = (topic) => {
         })
 }
 
-exports.fetchCommentsByArticleId = (id) =>{
-    return db
-        .query(
-            `SELECT * FROM comments
-            WHERE article_id=$1
-            ORDER BY created_at DESC;`, [id]) 
-        .then(({rows}) => {
-                return rows
-        })
-}
-
-exports.insertComment = (article_id, username, body) => {   
-    return db
-        .query(
-            `INSERT INTO comments 
-            (body, article_id, author) 
-            VALUES 
-            ($1, $2, $3)
-            RETURNING *;`,[body, article_id, username])
-        .then((result)=> {
-            return result.rows[0]
-        })
-}
-
-//added the for functionality, will move to users.model when /api/users endpoint is implemented
-exports.isValidUsername = (username)=> {
-
-    return db
-        .query(`SELECT username FROM users
-                WHERE username=$1;`, [username])
-        .then(({rows}) => {
-            if (rows.length === 0) {
-                return Promise.reject({ 
-                    status: 404, 
-                    message: `Username does not exist`
-                })
-            }
-            return rows
-        })
-}
 
 exports.calcNewVotes = (id, newVotes) => {
     return db

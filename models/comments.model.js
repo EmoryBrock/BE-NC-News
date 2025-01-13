@@ -10,10 +10,9 @@ exports.isValidCommentID = (id) => {
                     message: `No comment found with id ${id}`
                 })
             }
-            return rows[0]
+            return true
         })
 }
-
 exports.deleteCommentByCommentID = (id) => {
     return db
         .query(`
@@ -22,5 +21,29 @@ exports.deleteCommentByCommentID = (id) => {
             RETURNING *;`, [id])
         .then(({rows})=> {
             return rows[0]
+        })
+}
+
+exports.fetchCommentsByArticleId = (id) =>{
+    return db
+        .query(
+            `SELECT * FROM comments
+            WHERE article_id=$1
+            ORDER BY created_at DESC;`, [id]) 
+        .then(({rows}) => {
+                return rows
+        })
+}
+
+exports.insertComment = (article_id, username, body) => {   
+    return db
+        .query(
+            `INSERT INTO comments 
+            (body, article_id, author) 
+            VALUES 
+            ($1, $2, $3)
+            RETURNING *;`,[body, article_id, username])
+        .then((result)=> {
+            return result.rows[0]
         })
 }
